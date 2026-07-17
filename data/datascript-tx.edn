@@ -1,0 +1,25 @@
+;; data/datascript-tx.edn — DataScript tx-data derived from src/ordinance/facts.cljc
+;; `ordinance.facts/catalog` (ADR-2607141700 Wave 0). Same shape as sibling files.
+
+[#:ordinance{:id "guatemala-city.decreto-12-2002-codigo-municipal"
+             :title "Código Municipal (Decreto Número 12-2002 del Congreso de la República de Guatemala)"
+             :municipality "guatemala-city"
+             :country "GTM"
+             :kind :local-act
+             :number "Decreto 12-2002"
+             :url "https://portal.segeplan.gob.gt/segeplan/wp-content/uploads/2024/01/04.Dto_.-12-2002_Codigo-Municipal.pdf"
+             :url-provenance :official-diario-de-centro-america
+             :enacted-date "2002-05-13"
+             :retrieved-at "2026-07-18"
+             :topic [:governance]}
+ #:ordinance{:id "guatemala-city.1776-relocation-current-site"
+             :title "The seat of government was moved to the current location of Guatemala City in 1776, following the 1773 earthquakes that destroyed the old colonial capital, Antigua Guatemala"
+             :municipality "guatemala-city"
+             :country "GTM"
+             :kind :local-act
+             :number "1776"
+             :url "https://en.wikipedia.org/wiki/Guatemala_City"
+             :url-provenance :wikipedia-corroborated
+             :enacted-date "1776"
+             :retrieved-at "2026-07-18"
+             :topic [:governance]}]
