@@ -1,0 +1,28 @@
+;; facts.edn — the verifiable source register for Guatemala City.
+;; One entity per source. Mirrors src/ordinance/facts.cljc (the catalog);
+;; scripts/verify-facts.cljs re-fetches every URL here live.
+[{:source/id "ordinance.decreto-12-2002-codigo-municipal"
+  :source/verify :page-identity
+  :source/url "https://portal.segeplan.gob.gt/segeplan/wp-content/uploads/2024/01/04.Dto_.-12-2002_Codigo-Municipal.pdf"
+  :source/content-type :pdf
+  :ordinance/title "Código Municipal (Decreto Número 12-2002 del Congreso de la República de Guatemala)"
+  :ordinance/number "Decreto 12-2002"
+  :ordinance/enacted-date "2002-05-13"
+  :ordinance/country "GTM"
+  :ordinance/municipality "guatemala-city"
+  :ordinance/kind :local-act
+  :ordinance/url-provenance :official-diario-de-centro-america
+  :ordinance/topic #{:governance}}
+ {:source/id "history.1776-relocation-current-site"
+  :source/verify :page-text
+  :source/url "https://en.wikipedia.org/wiki/Guatemala_City"
+  :source/content-type :html
+  :page/must-contain ["1776" "Guatemala City" "earthquake"]
+  :ordinance/title "The seat of government was moved to the current location of Guatemala City in 1776, following the 1773 earthquakes that destroyed the old colonial capital, Antigua Guatemala"
+  :ordinance/number "1776"
+  :ordinance/enacted-date "1776"
+  :ordinance/country "GTM"
+  :ordinance/municipality "guatemala-city"
+  :ordinance/kind :local-act
+  :ordinance/url-provenance :wikipedia-corroborated
+  :ordinance/topic #{:governance}}]

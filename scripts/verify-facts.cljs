@@ -1,0 +1,118 @@
+#!/usr/bin/env nbb
+;; Re-fetches every source in facts.edn against the live authority.
+;;
+;;   nbb scripts/verify-facts.cljs                (from the repository root)
+;;   nbb scripts/verify-facts.cljs --facts <path>
+;;
+;; Three exit codes, on purpose:
+;;   0  every source checked out
+;;   1  a source did not check out          -- the register is wrong
+;;   2  the run could not answer            -- NOT a pass; a host declined us
+;;
+;; Connection-level failure of a CITED url (DNS, refused, reset) is exit 1:
+;; a dead citation is register-wrong. HTTP-level refusal (403/429/challenge)
+;; is exit 2 REFUSED: the host answered but will not talk to us, and a blocked
+;; run judges nothing.
+(ns verify-facts
+  (:require [clojure.edn :as edn]
+            [clojure.string :as str]
+            ["fs" :as fs]
+            [promesa.core :as p]))
+
+(def argv (vec (drop 2 (js->clj (.-argv (js/require "process"))))))
+(defn- flag [name default]
+  (let [i (.indexOf (into-array argv) name)]
+    (if (and (>= i 0) (< (inc i) (count argv))) (nth argv (inc i)) default)))
+
+(def facts-path (flag "--facts" "facts.edn"))
+
+(def facts
+  (try
+    (edn/read-string (str/trim (fs/readFileSync facts-path "utf8")))
+    (catch :default e
+      (println (str "REFUSED\tcannot read " facts-path ": " (.-message e)))
+      (js/process.exit 2))))
+
+(def known-kinds #{:local-act :ordinance})
+(def known-provenance #{:official-diario-de-centro-america :wikipedia-corroborated})
+
+(defn https-url? [u] (and (string? u) (re-find #"^https://" u)))
+
+(defn shape-check [e]
+  (cond
+    (not (string? (:source/id e)))                "missing-id"
+    (not (:source/url e))                         "missing-url"
+    (not (https-url? (:source/url e)))            "url-not-https"
+    (not (contains? known-kinds (:ordinance/kind e))) "unknown-kind"
+    (not (contains? known-provenance (:ordinance/url-provenance e))) "unknown-provenance"
+    (empty? (:ordinance/title e))                 "empty-title"
+    (not (string? (:ordinance/enacted-date e)))   "missing-enacted-date"
+    (empty? (:ordinance/number e))                "empty-number"
+    (not (set? (:ordinance/topic e)))             "missing-topic"
+    (not= (:ordinance/municipality e) "guatemala-city") "municipality-mismatch"
+    (not (re-find #"^[A-Z]{3}$" (or (:ordinance/country e) ""))) "country-case"
+    (and (= :page-text (:source/verify e))
+         (not (seq (:page/must-contain e))))      "missing-must-contain"
+    :else nil))
+
+(defn live-check [e]
+  (p/let [resp (p/catch (js/fetch (:source/url e) #js {:redirect "follow"})
+                        (fn [err] {:fetch-error (.-message err)}))]
+    (if (:fetch-error resp)
+      {:fail (str "fetch-failed: " (:fetch-error resp))}
+      (let [status (.-status resp)
+            ct (or (.get (.-headers resp) "content-type") "")]
+        (if (>= status 400)
+          (if (#{403 429 503} status)
+            {:refused (str "http " status)}
+            {:fail (str "http-status: " status)})
+          (p/let [body (if (= :page-text (:source/verify e)) (.text resp) "")]
+            (if (= :page-text (:source/verify e))
+              (let [missed (remove #(str/includes? body %) (:page/must-contain e))]
+                (if (seq missed)
+                  {:fail (str "must-contain-missing: " (first missed))}
+                  {:ok true}))
+              (if (str/includes? ct "pdf")
+                {:ok true}
+                {:fail (str "content-type: " ct)}))))))))
+
+(defn self-tests [fs]
+  (let [shape-fails (mapv shape-check fs)
+        ids (map :source/id fs)]
+    [[:shape (fn [] (every? nil? shape-fails))]
+     [:ids-unique (fn [] (= (count ids) (count (distinct ids))))]
+     [:urls-https (fn [] (every? https-url? (map :source/url fs)))]
+     [:text-declares-tokens (fn [] (every? seq (map :page/must-contain (filter #(= :page-text (:source/verify %)) fs))))]
+     [:identity-declared (fn [] (every? #(contains? #{:page-identity :page-text} (:source/verify %)) fs))]]))
+
+(let [shape-fails (mapv shape-check facts)
+      ids (map :source/id facts)
+      dup-id? (not= (count ids) (count (distinct ids)))
+      ;; entries with a clean shape go to the live authority; broken ones
+      ;; are reported structurally and are NOT fetched
+      live-targets (mapv (fn [e f] (when (nil? f) e)) facts shape-fails)]
+  (doseq [[name f] (self-tests facts)]
+    (println (str "SELF-TEST\t" (if (f) "ok" "FAIL") "\t" name)))
+  (doseq [[e f] (map vector facts shape-fails)]
+    (when f (println (str "FAIL\t" (:source/id e) "\treason=" f))))
+  (when dup-id?
+    (println "FAIL\t(duplicate-id)\treason=duplicate-id"))
+  (if (or (some some? shape-fails) dup-id?)
+    (do
+      (println (str "SCANNED\t0\tof " (count facts)))
+      (println "verify-facts: FAILURES PRESENT")
+      (js/process.exit 1))
+    (p/let [results (p/all (mapv (fn [e]
+                                   (p/let [r (live-check e)] [e r]))
+                                 facts))]
+      (doseq [[e r] results]
+        (cond
+          (:ok r)      (println (str "ok\t" (:source/id e)))
+          (:refused r) (println (str "REFUSED\t" (:source/id e) "\t" (:refused r)))
+          :else        (println (str "FAIL\t" (:source/id e) "\treason=" (:fail r)))))
+      (let [refused? (some (fn [[_ r]] (:refused r)) results)
+            ok-count (count (filter (fn [[_ r]] (:ok r)) results))
+            all-pass? (and (not refused?) (= ok-count (count facts)))]
+        (println (str "SCANNED\t" ok-count "\tof " (count facts)))
+        (println (str "verify-facts: " (cond all-pass? "ALL PASS" refused? "REFUSED" :else "FAILURES PRESENT")))
+        (js/process.exit (cond all-pass? 0 refused? 2 :else 1))))))
