@@ -47,6 +47,16 @@
   the date directly and unambiguously tied to the CURRENT city's
   location in the source text.
 
+  2026-09-05 ingest-scout extension: Acuerdo COM-21-2024 (Concejo
+  Municipal, solvencia electrónica de transporte y tránsito / EMETRA)
+  was read verbatim from the PDF served by the official gazette's
+  services host (servicios.dca.gob.gt), which cites the Código
+  Municipal Decreto 12-2002 and publishes it in the Diario de Centro
+  América; the gazette itself (dca.gob.gt, plus its gazette-of-record
+  status) and the Municipalidad's Visión de Ciudad portal were fetched
+  live the same run. muniguate.com / udi.muniguate.com currently
+  redirect to a non-resolving host and are NOT cited.
+
   An ordinance not in this table has NO spec-basis, full stop; extend
   `catalog`, do not invent an id/url/date.")
 
@@ -64,6 +74,39 @@
      :ordinance/enacted-date "2002-05-13"
      :ordinance/retrieved-at "2026-07-18"
      :ordinance/topic #{:governance}}
+    {:ordinance/id "guatemala-city.acuerdo-com-21-2024-solvencia-electronica"
+     :ordinance/title "Acuerdo COM-21-2024 del Concejo Municipal de Guatemala (solvencia electrónica de transporte y tránsito, EMETRA)"
+     :ordinance/municipality "guatemala-city"
+     :ordinance/country "GTM"
+     :ordinance/kind :ordinance
+     :ordinance/number "Acuerdo COM-21-2024"
+     :ordinance/url "https://servicios.dca.gob.gt/storage/uploads/2024/07/22/88a53f4d-8218-4379-a80b-78d747706b1c.pdf"
+     :ordinance/url-provenance :official-diario-de-centro-america
+     :ordinance/enacted-date "2024-07"
+     :ordinance/retrieved-at "2026-09-05"
+     :ordinance/topic #{:governance :transport}}
+    {:ordinance/id "guatemala-city.gazette-diario-de-centro-america"
+     :ordinance/title "Diario de Centro América — official gazette of the Republic of Guatemala (official organ; publishes municipal acuerdos and national decretos)"
+     :ordinance/municipality "guatemala-city"
+     :ordinance/country "GTM"
+     :ordinance/kind :ordinance
+     :ordinance/number "gazette"
+     :ordinance/url "https://dca.gob.gt/"
+     :ordinance/url-provenance :wikipedia-corroborated
+     :ordinance/enacted-date "1880"
+     :ordinance/retrieved-at "2026-09-05"
+     :ordinance/topic #{:governance}}
+    {:ordinance/id "guatemala-city.municipal-portal-vision-de-ciudad"
+     :ordinance/title "Visión de Ciudad — official urban-planning / city-vision portal of the Municipalidad de Guatemala"
+     :ordinance/municipality "guatemala-city"
+     :ordinance/country "GTM"
+     :ordinance/kind :ordinance
+     :ordinance/number "portal"
+     :ordinance/url "https://visiondeciudad.gt/"
+     :ordinance/url-provenance :wikipedia-corroborated
+     :ordinance/enacted-date "2026-09-05"
+     :ordinance/retrieved-at "2026-09-05"
+     :ordinance/topic #{:governance :planning}}
     {:ordinance/id "guatemala-city.1776-relocation-current-site"
      :ordinance/title "The seat of government was moved to the current location of Guatemala City in 1776, following the 1773 earthquakes that destroyed the old colonial capital, Antigua Guatemala"
      :ordinance/municipality "guatemala-city"
