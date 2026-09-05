@@ -50,10 +50,23 @@ fabricate one.
   alongside other `cloud-itonami`/`etzhayyim` compliance-fact sources via
   `com-junkawasaki/root`'s `scripts/compliance-fact-query.cljs`).
 
-Both entries directly confirmed: **Código Municipal** (Decreto
-12-2002, gazetted 13 May 2002) and the **1776 relocation** of the
-seat of government to the current site of Guatemala City, following
-the 1773 earthquakes that destroyed Antigua Guatemala.
+Six sources, all re-fetched live by `scripts/verify-facts.cljs`:
+**Código Municipal** (Decreto 12-2002, gazetted 13 May 2002, official
+PDF hosted by SEGEPLAN), **Acuerdo COM-21-2024** of the Concejo
+Municipal (solvencia electrónica de transporte y tránsito / EMETRA,
+as published by the official gazette's services host,
+`servicios.dca.gob.gt`), the **Diario de Centro América** itself
+(official gazette; both its site and its gazette-of-record status),
+the **1776 relocation** of the seat of government to the current site
+of Guatemala City (following the 1773 earthquakes that destroyed
+Antigua Guatemala), and the Municipalidad's own **Visión de Ciudad**
+urban-planning portal. Extended 2026-09-05 by the itonami ingest
+scout: every citation was fetched live during that run.
+
+Known-unreachable (measured 2026-09-05, NOT cited): `www.muniguate.com`
+and `udi.muniguate.com` 301-redirect to `www5.munigate10.com`, which
+does not resolve (NXDOMAIN). The municipalidad's principal web estate
+is currently un-citable until that DNS record returns.
 
 ## License
 
