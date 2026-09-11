@@ -1,6 +1,6 @@
 ;; facts.edn — the verifiable source register for Guatemala City.
-;; One entity per source. Mirrors src/ordinance/facts.cljc (the catalog);
-;; scripts/verify-facts.cljs re-fetches every URL here live.
+;; One entity per source. Mirrors src/ordinance/facts.cljk (the catalog);
+;; scripts/verify-facts.cljk re-fetches every URL here live.
 ;; Extended 2026-09-05 (ingest scout): every URL below was fetched live during
 ;; this run. See :source/verify for the per-source verification method.
 [{:source/id "ordinance.decreto-12-2002-codigo-municipal"

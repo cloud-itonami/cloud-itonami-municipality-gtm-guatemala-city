@@ -44,13 +44,13 @@ fabricate one.
 
 ## Data
 
-- `src/ordinance/facts.cljc` — the catalog, source of truth.
+- `src/ordinance/facts.cljk` — the catalog, source of truth.
 - `schema/ordinance.edn` — DataScript schema.
 - `data/datascript-tx.edn` — derived DataScript tx-data (query this
   alongside other `cloud-itonami`/`etzhayyim` compliance-fact sources via
   `com-junkawasaki/root`'s `scripts/compliance-fact-query.cljs`).
 
-Six sources, all re-fetched live by `scripts/verify-facts.cljs`:
+Six sources, all re-fetched live by `scripts/verify-facts.cljk`:
 **Código Municipal** (Decreto 12-2002, gazetted 13 May 2002, official
 PDF hosted by SEGEPLAN), **Acuerdo COM-21-2024** of the Concejo
 Municipal (solvencia electrónica de transporte y tránsito / EMETRA,
