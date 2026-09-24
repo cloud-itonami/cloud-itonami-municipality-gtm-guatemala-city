@@ -14,7 +14,7 @@
 ;; is exit 2 REFUSED: the host answered but will not talk to us, and a blocked
 ;; run judges nothing.
 (ns verify-facts
-  (:require [clojure.edn :as edn]
+  (:require [kotoba.lang.edn :as edn]
             [kotoba.lang.text :as str]
             ["fs" :as fs]
             [promesa.core :as p]))
