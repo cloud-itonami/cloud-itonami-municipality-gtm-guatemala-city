@@ -5,7 +5,7 @@
 ;;
 ;;   kbb --backend sci scripts/mutation-check.cljk
 (ns mutation-check
-  (:require [clojure.edn :as edn]
+  (:require [kotoba.lang.edn :as edn]
             [kotoba.lang.text :as str]
             ["child_process" :as cp]
             ["fs" :as fs]
